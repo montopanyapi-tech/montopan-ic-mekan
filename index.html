@@ -11,7 +11,7 @@
             background-color: #0f172a;
             font-family: 'Segoe UI', Arial, sans-serif;
             color: #f1f5f9;
-            display: flex; justify-content: center; align-items: center;
+            display: flex; justify-content: center; align-items: flex-start;
             min-height: 100vh;
         }
         #app-wrapper {
@@ -83,12 +83,6 @@
             background-size: 180px auto;
         }
 
-        /* 
-           TAM NİŞ ÇERÇEVE MASKESİ
-           Beyaz boşlukları tamamen kapatmak için alan genişletildi:
-           Sol sınır %26.5'ten %20.2'ye çekildi, Sağ sınır %73.0'ten %79.3'e çekildi.
-           Üst sınır %25.4'ten %2.4'e çekildi, Alt sınır ise minderlerin arkasına gizlendi.
-        */
         .wall-main {
             clip-path: polygon(
                 20.2% 2.4%, 
@@ -98,7 +92,6 @@
             );
         }
 
-        /* Çerçevenin gömme derinliğini panelin üstüne yansıtan gölge */
         .molding-shadow {
             position: absolute;
             top: 2.4%; left: 20.2%;
@@ -128,10 +121,8 @@
         <div id="stage-wrapper">
             <img src="room.jpg" id="base-house" alt="Modern Koltuklu Oda">
             
-            <!-- Çerçeveye Oturan Panel Katmanı -->
             <div class="wall-overlay wall-main"></div>
             
-            <!-- Kenar Derinlik Katmanı -->
             <div class="molding-shadow"></div>
         </div>
     </div>
