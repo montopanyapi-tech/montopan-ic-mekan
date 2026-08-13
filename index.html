@@ -29,7 +29,7 @@
             border-radius: 6px; margin-bottom: 6px; border: 1px solid #334155;
             flex-wrap: wrap; gap: 10px;
         }
-        .control-group { display: flex; align-items: center; gap: 15px; }
+        .control-group { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
         input[type="file"] { display: none; }
         
         .custom-file-upload {
@@ -44,16 +44,26 @@
             background: #475569; color: #fff; border: 1px solid #64748b;
             border-radius: 6px; font-weight: 600; font-size: 14px; transition: all 0.2s;
         }
-        .clear-btn:hover { background: #475569; }
+        .clear-btn:hover { background: #64748b; }
 
         #file-status { font-size: 13px; color: #94a3b8; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .exit-link {
-            display: inline-block; padding: 8px 16px; background: #ef4444; color: white;
-            border: none; font-weight: bold; font-size: 14px; border-radius: 6px;
-            cursor: pointer; transition: all 0.2s; text-decoration: none;
+        .guide-text {
+            font-size: 13px;
+            color: #38bdf8;
+            font-weight: 500;
         }
-        .exit-link:hover { background: #b91c1c; }
+
+        .sim-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #f1f5f9;
+            background: #1e293b;
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+            letter-spacing: 0.5px;
+        }
 
         /* CANLI SAHNE ALANI */
         #stage-wrapper {
@@ -109,10 +119,11 @@
                 <input type="file" id="panelInput" accept="image/*">
                 <button type="button" class="clear-btn" onclick="clearPanel()">❌ Temizle</button>
                 <span id="file-status">Panel Seçilmedi</span>
+                <span class="guide-text">💡 Panel resmini bilgisayarınıza indirin ve panel seç'e tıklayın.</span>
             </div>
             
             <div class="control-group">
-                <a href="https://www.montopan.com/ana-sayfa"target="_top" class="exit-link">🚪 Geri Dön</a>
+                <div class="sim-title">Montopan İç Mekan Simülatörü</div>
             </div>
         </div>
 
