@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Montopan Cephe Visualizer v12.2</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 10px;
+            background-color: #0f172a;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #f1f5f9;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh;
+        }
+        #app-wrapper {
+            width: 100%;
+            max-width: 1200px; background: #1e293b; padding: 20px;
+            border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 10;
+        }
+        #top-control-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #0f172a; padding: 15px 25px;
+            border-radius: 10px; margin-bottom: 20px; border: 1px solid #334155;
+            position: relative;
+            z-index: 20;
+            flex-wrap: wrap; gap: 10px;
+        }
+        .control-group { display: flex; align-items: center; gap: 15px; position: relative; z-index: 30; }
+        input[type="file"] { display: none; }
+        
+        .custom-file-upload {
+            display: inline-block; padding: 12px 24px; cursor: pointer;
+            background: #334155; color: #fff; border: 2px dashed #38bdf8;
+            border-radius: 6px; font-weight: 600; font-size: 15px; transition: all 0.2s;
+        }
+        .custom-file-upload:hover { background: #38bdf8; color: #0f172a; border-style: solid; }
+        
+        .clear-btn {
+            display: inline-block; padding: 12px 24px; cursor: pointer;
+            background: #475569; color: #fff; border: 1px solid #64748b;
+            border-radius: 6px; font-weight: 600; font-size: 15px; transition: all 0.2s;
+        }
+        .clear-btn:hover { background: #64748b; }
+
+        #file-status { font-size: 13px; color: #94a3b8; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .exit-link {
+            display: inline-block; padding: 12px 20px; background: #ef4444; color: white;
+            border: none; font-weight: bold; font-size: 15px; border-radius: 6px;
+            transition: all 0.2s; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+            cursor: pointer;
+        }
+        .exit-link:hover { background: #b91c1c; transform: translateY(-1px); }
+
+        /* CANLI SAHNE ALANI */
+        #stage-wrapper {
+            position: relative;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #334155;
+            background: #0f172a;
+        }
+        #base-house {
+            display: block;
+            width: 100%;
+            height: auto;
+            z-index: 1;
+        }
+
+        /* KAPLAMA MASKELERI */
+        .wall-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2; pointer-events: none;
+            mix-blend-mode: multiply;
+            opacity: 0.95;
+            background-repeat: repeat;
+            background-size: 180px auto;
+        }
+
+        /* 
+           TAM NİŞ ÇERÇEVE MASKESİ
+           Beyaz boşlukları tamamen kapatmak için alan genişletildi:
+           Sol sınır %26.5'ten %20.2'ye çekildi, Sağ sınır %73.0'ten %79.3'e çekildi.
+           Üst sınır %25.4'ten %2.4'e çekildi, Alt sınır ise minderlerin arkasına gizlendi.
+        */
+        .wall-main {
+            clip-path: polygon(
+                20.2% 2.4%, 
+                79.3% 2.4%, 
+                79.3% 53.6%, 
+                20.2% 53.6%
+            );
+        }
+
+        /* Çerçevenin gömme derinliğini panelin üstüne yansıtan gölge */
+        .molding-shadow {
+            position: absolute;
+            top: 2.4%; left: 20.2%;
+            width: 59.1%; height: 51.2%;
+            z-index: 3; pointer-events: none;
+            box-shadow: inset 0 0 12px rgba(0,0,0,0.35);
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-wrapper">
+        <div id="top-control-bar">
+            <div class="control-group">
+                <label for="panelInput" class="custom-file-upload">📁 Panel Seç (Resim Çağır)</label>
+                <input type="file" id="panelInput" accept="image/*">
+                <button type="button" class="clear-btn" onclick="clearPanel()">❌ Temizle</button>
+                <span id="file-status">Panel Seçilmedi</span>
+            </div>
+            
+            <div class="control-group">
+                <button type="button" class="exit-link" onclick="closeOrRedirect()">🚪 Geri Dön</button>
+            </div>
+        </div>
+
+        <div id="stage-wrapper">
+            <img src="room.jpg" id="base-house" alt="Modern Koltuklu Oda">
+            
+            <!-- Çerçeveye Oturan Panel Katmanı -->
+            <div class="wall-overlay wall-main"></div>
+            
+            <!-- Kenar Derinlik Katmanı -->
+            <div class="molding-shadow"></div>
+        </div>
+    </div>
+
+<script>
+function closeOrRedirect() {
+    window.close();
+    setTimeout(function() {
+        window.location.href = "https://montopan.com";
+    }, 100);
+}
+
+function clearPanel() {
+    document.getElementById("panelInput").value = "";
+    document.getElementById("file-status").innerText = "Panel Seçilmedi";
+    const wallOverlays = document.querySelectorAll(".wall-overlay");
+    wallOverlays.forEach(function(wall) {
+        wall.style.backgroundImage = "none";
+    });
+}
+
+document.getElementById("panelInput").addEventListener("change", function(e) {
+    if (!e.target.files || e.target.files.length === 0) return;
+    
+    const file = e.target.files[0];
+    document.getElementById("file-status").innerText = file.name;
+
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        const wallOverlays = document.querySelectorAll(".wall-overlay");
+        wallOverlays.forEach(function(wall) {
+            wall.style.backgroundImage = "url('" + evt.target.result + "')";
+        });
+    };
+    reader.readAsDataURL(file);
+});
+</script>
+</body>
+</html>
